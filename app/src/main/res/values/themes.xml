@@ -3,6 +3,8 @@
     <style name="Base.Theme.WeatherAppN" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimaryVariant">@color/card_blue</item>
+
     </style>
 
     <style name="Theme.WeatherAppN" parent="Base.Theme.WeatherAppN" />

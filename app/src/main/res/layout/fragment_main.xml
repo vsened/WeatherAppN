@@ -6,19 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MainFragment">
 
+
     <ImageView
         android:id="@+id/iv_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:alpha="0.8"
         android:scaleType="centerCrop"
-        android:src="@drawable/background"
+        android:src="@drawable/background_j"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -154,7 +155,7 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/wp"
+        android:id="@+id/vp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"

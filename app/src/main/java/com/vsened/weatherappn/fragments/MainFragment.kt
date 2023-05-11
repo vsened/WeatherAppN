@@ -9,13 +9,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentActivity
+import com.google.android.material.tabs.TabLayoutMediator
 import com.vsened.weatherappn.R
+import com.vsened.weatherappn.adapters.VpAdapter
 import com.vsened.weatherappn.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
     private lateinit var pLauncher: ActivityResultLauncher<String>
+    private val fList = listOf(
+        HoursFragment.newInstance(),
+        DaysFragment.newInstance()
+    )
+    private val tList = listOf(
+        "HOURS",
+        "DAYS"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +39,17 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
+        init()
+    }
+
+    private fun init() = with(binding) {
+        vp.adapter = VpAdapter(
+            activity as FragmentActivity,
+            fList
+        )
+        TabLayoutMediator(tabLayout, vp) {
+            tab, pos -> tab.text = tList[pos]
+        }.attach()
     }
 
     private fun permissionListener() {
@@ -36,7 +58,6 @@ class MainFragment : Fragment() {
         ) {
             Toast.makeText(activity, "Permission is $it", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun checkPermission() {
@@ -47,8 +68,6 @@ class MainFragment : Fragment() {
     }
 
     companion object {
-
-        @JvmStatic
         fun newInstance() = MainFragment()
     }
 }
