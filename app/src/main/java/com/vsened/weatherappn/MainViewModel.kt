@@ -3,6 +3,7 @@ package com.vsened.weatherappn
 import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,7 +37,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     result -> parseWeatherData(result)
             },
             {
-                    error -> Log.d("myLog", "Error: $error")
+                    error ->
+                Toast.makeText(context, "Check your internet connection!", Toast.LENGTH_SHORT).show()
             }
         )
         queue.add(request)
@@ -56,7 +58,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             condition = json.getJSONObject("current").getJSONObject("condition")
                 .getString("text"),
             currentTemp = json.getJSONObject("current").getDouble("temp_c")
-                .toInt().toString(),
+                .toInt().toString() + "°C",
             maxTemp = weatherItem.maxTemp,
             minTemp = weatherItem.minTemp,
             imageUrl = "https:" + json.getJSONObject("current").getJSONObject("condition")
@@ -76,8 +78,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 time = response.getJSONObject(day).getString("date"),
                 condition = response.getJSONObject(day).getJSONObject("day")
                     .getJSONObject("condition").getString("text"),
-                currentTemp = response.getJSONObject(day).getJSONObject("day")
-                    .getDouble("avgtemp_c").toInt().toString(),
+                currentTemp = "${response.getJSONObject(day).getJSONObject("day")
+                    .getDouble("maxtemp_c").toInt()}°C / ${response.getJSONObject(day)
+                    .getJSONObject("day").getDouble("mintemp_c").toInt()}°C",
                 maxTemp = response.getJSONObject(day).getJSONObject("day")
                     .getString("maxtemp_c"),
                 minTemp = response.getJSONObject(day).getJSONObject("day")
@@ -102,7 +105,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 condition = jsonArray.getJSONObject(hour).getJSONObject("condition")
                     .getString("text"),
                 currentTemp = jsonArray.getJSONObject(hour).getDouble("temp_c")
-                    .toInt().toString(),
+                    .toInt().toString() + "°C",
                 "",
                 "",
                 imageUrl = "https:" + jsonArray.getJSONObject(hour).getJSONObject("condition")

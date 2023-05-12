@@ -74,7 +74,7 @@ class MainFragment : Fragment() {
         viewModel.liveDataCurrent.observe(viewLifecycleOwner) {
             tvData.text = it.time
             tvCity.text = it.city
-            tvCurrentTemp.text = "${it.currentTemp}°C"
+            tvCurrentTemp.text = it.currentTemp
             tvCondition.text = it.condition
             tvMinMaxTemp.text = "${it.minTemp}°C / ${it.maxTemp}°C"
             Picasso.get().load(it.imageUrl).into(ivWeather)

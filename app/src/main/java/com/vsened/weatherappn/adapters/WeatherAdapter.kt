@@ -12,6 +12,7 @@ import com.vsened.weatherappn.databinding.WeatherItemBinding
 
 class WeatherAdapter:  ListAdapter<WeatherModel, WeatherAdapter.WeatherViewHolder>(Comparator()){
 
+    var onItemClickListener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -24,6 +25,9 @@ class WeatherAdapter:  ListAdapter<WeatherModel, WeatherAdapter.WeatherViewHolde
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
         holder.bind(getItem(position))
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.onItemClick(getItem(position))
+        }
     }
 
     class WeatherViewHolder(view: View): ViewHolder(view) {
@@ -46,5 +50,9 @@ class WeatherAdapter:  ListAdapter<WeatherModel, WeatherAdapter.WeatherViewHolde
             return oldItem == newItem
         }
 
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(item: WeatherModel)
     }
 }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.vsened.weatherappn.MainViewModel
 import com.vsened.weatherappn.R
 import com.vsened.weatherappn.adapters.WeatherAdapter
+import com.vsened.weatherappn.adapters.WeatherModel
 import com.vsened.weatherappn.databinding.FragmentDaysBinding
 import com.vsened.weatherappn.databinding.FragmentHoursBinding
 
@@ -32,6 +33,12 @@ class DaysFragment : Fragment() {
         initRecyclerView()
         viewModel.liveDataList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+        }
+        adapter.onItemClickListener = object : WeatherAdapter.OnItemClickListener {
+            override fun onItemClick(item: WeatherModel) {
+                viewModel.liveDataCurrent.value = item
+            }
+
         }
     }
 
