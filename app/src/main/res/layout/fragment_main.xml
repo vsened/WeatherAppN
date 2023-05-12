@@ -106,18 +106,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvCondition" />
 
             <ImageButton
-                android:id="@+id/ibSearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@null"
-                android:src="@drawable/ic_search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCondition" />
-
-            <ImageButton
                 android:id="@+id/ibSync"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

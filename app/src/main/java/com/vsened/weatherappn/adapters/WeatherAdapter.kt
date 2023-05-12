@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.squareup.picasso.Picasso
 import com.vsened.weatherappn.R
 import com.vsened.weatherappn.databinding.WeatherItemBinding
 
@@ -32,6 +33,7 @@ class WeatherAdapter:  ListAdapter<WeatherModel, WeatherAdapter.WeatherViewHolde
             tvDate.text = item.time
             tvCondition.text = item.condition
             tvTemp.text = item.currentTemp
+            Picasso.get().load(item.imageUrl).into(ivWeatherIcon)
         }
     }
 
