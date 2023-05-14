@@ -1,31 +1,38 @@
 package com.vsened.weatherappn
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.vsened.weatherappn.adapters.WeatherModel
-import com.vsened.weatherappn.fragments.MainFragment
 import org.json.JSONArray
 import org.json.JSONObject
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
+    private lateinit var fLocationClient: FusedLocationProviderClient
+
     val liveDataCurrent = MutableLiveData<WeatherModel>()
     val liveDataList = MutableLiveData<List<WeatherModel>>()
     @SuppressLint("StaticFieldLeak")
-    val context = getApplication<Application>().applicationContext
+    private val context = getApplication<Application>().applicationContext
 
-    fun requestWeatherData(cityName: String) {
+    private fun requestWeatherData(location: String) {
         val url = "https://api.weatherapi.com/v1/forecast.json?" +
                 "key=${API_KEY}" +
-                "&q=$cityName" +
+                "&q=$location" +
                 "&days=3" +
                 "&aqi=no" +
                 "&alerts=no"
@@ -42,6 +49,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         )
         queue.add(request)
+    }
+
+    fun getCurrentLocation() {
+        fLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        val ct = CancellationTokenSource()
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fLocationClient
+            .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
+            .addOnCompleteListener {
+                requestWeatherData("${it.result.latitude},${it.result.longitude}")
+            }
     }
 
     private fun parseWeatherData(result: String) {
@@ -65,7 +92,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 .getString("icon"),
             hours = weatherItem.hours
         )
-        Log.d(TAG, item.toString())
         liveDataCurrent.value = item
     }
 

@@ -3,28 +3,21 @@ package com.vsened.weatherappn.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
 import com.vsened.weatherappn.MainViewModel
 import com.vsened.weatherappn.adapters.VpAdapter
-import com.vsened.weatherappn.adapters.WeatherModel
 import com.vsened.weatherappn.databinding.FragmentMainBinding
-import org.json.JSONObject
 
 class MainFragment : Fragment() {
 
@@ -53,9 +46,9 @@ class MainFragment : Fragment() {
         checkPermission()
         init()
         updateCurrentCard()
-        viewModel.requestWeatherData("Chelyabinsk")
+        viewModel.getCurrentLocation()
         binding.ibSync.setOnClickListener {
-            viewModel.requestWeatherData("Berlin")
+            viewModel.getCurrentLocation()
         }
     }
 
@@ -67,6 +60,7 @@ class MainFragment : Fragment() {
         TabLayoutMediator(tabLayout, vp) {
             tab, pos -> tab.text = tList[pos]
         }.attach()
+
     }
 
     @SuppressLint("SetTextI18n")
