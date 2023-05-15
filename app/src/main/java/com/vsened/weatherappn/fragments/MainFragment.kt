@@ -2,7 +2,11 @@ package com.vsened.weatherappn.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
+import com.vsened.weatherappn.DialogManager
 import com.vsened.weatherappn.MainViewModel
 import com.vsened.weatherappn.adapters.VpAdapter
 import com.vsened.weatherappn.databinding.FragmentMainBinding
@@ -46,10 +51,15 @@ class MainFragment : Fragment() {
         checkPermission()
         init()
         updateCurrentCard()
-        viewModel.getCurrentLocation()
         binding.ibSync.setOnClickListener {
-            viewModel.getCurrentLocation()
+            binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
+            checkLocation()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkLocation()
     }
 
     private fun init() = with(binding) {
@@ -87,6 +97,23 @@ class MainFragment : Fragment() {
             permissionListener()
             pLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+    }
+
+    private fun checkLocation() {
+        if (isLocationEnabled()) {
+            viewModel.getCurrentLocation()
+        } else {
+            DialogManager.locationSettingsDialog(requireContext(), object: DialogManager.DialogListener {
+                override fun onClick() {
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+            })
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     companion object {

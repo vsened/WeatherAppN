@@ -3,7 +3,11 @@ package com.vsened.weatherappn
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -17,6 +21,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.vsened.weatherappn.adapters.WeatherModel
+import com.vsened.weatherappn.fragments.MainFragment
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -43,8 +48,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             {
                     result -> parseWeatherData(result)
             },
-            {
-                    error ->
+            { _ ->
                 Toast.makeText(context, "Check your internet connection!", Toast.LENGTH_SHORT).show()
             }
         )
@@ -52,6 +56,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getCurrentLocation() {
+        if (!isLocationEnabled()) {
+            Toast.makeText(context, "Location disabled!", Toast.LENGTH_SHORT).show()
+            return
+        }
         fLocationClient = LocationServices.getFusedLocationProviderClient(context)
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
@@ -143,6 +151,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return hoursTemp
     }
 
+    private fun isLocationEnabled(): Boolean {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    fun checkLocation() {
+        if (isLocationEnabled()) {
+            getCurrentLocation()
+        } else {
+            DialogManager.locationSettingsDialog(context, object: DialogManager.DialogListener {
+                override fun onClick() {
+                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                }
+            })
+        }
+    }
 
     companion object{
         private const val TAG = "MainViewModel"
