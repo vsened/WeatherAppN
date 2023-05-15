@@ -7,6 +7,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +55,13 @@ class MainFragment : Fragment() {
         binding.ibSync.setOnClickListener {
             binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
             checkLocation()
+        }
+        binding.ibSearch.setOnClickListener {
+            DialogManager.searchByName(requireContext(), object : DialogManager.DialogListener {
+                override fun onClick(name: String?) {
+                    name?.let { location -> viewModel.getUserChoiceLocation(location) }
+                }
+            })
         }
     }
 
@@ -104,11 +112,15 @@ class MainFragment : Fragment() {
             viewModel.getCurrentLocation()
         } else {
             DialogManager.locationSettingsDialog(requireContext(), object: DialogManager.DialogListener {
-                override fun onClick() {
+                override fun onClick(name: String?) {
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
             })
         }
+    }
+
+    private fun inputLocation() {
+
     }
 
     private fun isLocationEnabled(): Boolean {

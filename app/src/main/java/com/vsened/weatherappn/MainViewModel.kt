@@ -156,17 +156,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-    fun checkLocation() {
+    private fun checkLocation() {
         if (isLocationEnabled()) {
             getCurrentLocation()
         } else {
             DialogManager.locationSettingsDialog(context, object: DialogManager.DialogListener {
-                override fun onClick() {
+                override fun onClick(name: String?) {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 }
             })
         }
     }
+
+    fun getUserChoiceLocation(location: String) {
+        requestWeatherData(location)
+    }
+
+
 
     companion object{
         private const val TAG = "MainViewModel"
